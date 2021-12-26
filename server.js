@@ -1,10 +1,12 @@
 const express = require('express');     // サーバライブラリ
 const line = require('@line/bot-sdk');  // LINEライブラリ
+const utility = require(`./utility`) 
 
+const appSettings = utility.loadAppSettings();
 
 const config = {
-    channelAccessToken: '',     // 作成したBOTのチャンネルシークレット
-    channelSecret: ''           // 作成したBOTのチャンネルアクセストークン
+    channelAccessToken: appSettings.channelAccessToken,     // 作成したBOTのチャンネルシークレット
+    channelSecret: appSettings.channelSecret           // 作成したBOTのチャンネルアクセストークン
 };
 
 const PORT = process.env.PORT || 3000;  // サーバのポート番号

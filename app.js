@@ -2,7 +2,8 @@ const axios = require("axios"); // http通信ライブラリ
 const cron = require("node-cron"); // 定期処理ライブラリ
 const fs = require("fs"); // ファイル処理ライブラリ
 const winston = require("winston"); // ロギングライブラリ
-const server = require("./server");
+const server = require("./server"); // サーバライブラリ
+const utility = require("./utility") // アプリ設定ファイル処理ライブライ
 
 // ロガー設定
 const logger = winston.createLogger({
@@ -23,9 +24,9 @@ try {
   logger.error(`アプリ設定ファイルの読み込みに失敗しました => ${error}`);
 }
 
-const url = `https://www.jma.go.jp/bosai/forecast/data/forecast/${appSettings.weather_info.area_code}.json`;
+const url = `https://www.jma.go.jp/bosai/forecast/data/forecast/${appSettings.weatherInfo.areaCode}.json`;
 // 毎日定刻に送信を行う
-cron.schedule(appSettings.cron_schedule, () => {
+cron.schedule(appSettings.cronSchedule, () => {
   let weatherForecastData;
   /**
    * 気象庁のWebサイトから天気予報データを取得する
@@ -102,21 +103,3 @@ function makeLineMessage(maxPopInfo) {
 }
 
 
-/**
- * アプリ設定ファイルを読み込む
- */
-function loadAppSettings() {
-  const appSettingsPath = "./settings/appSettings.json";
-  if (!fs.existsSync(appSettingsPath)) {
-    logger.error(`アプリ設定ファイルは存在しません。 => ${appSettingsPath}`);
-  }
-
-  let appSettings; // アプリ設定オブジェクト
-  try {
-    appSettings = JSON.parse(fs.readFileSync(appSettingsPath, "utf8"));
-  } catch (error) {
-    logger.error(`アプリ設定ファイルのjson形式が不正です。 => ${error}`);
-  }
-
-  return appSettings;
-}
