@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@line/bot-sdk": "^7.4.0",
     "axios": "^0.24.0",
     "cron": "^1.8.2",
+    "express": "^4.17.2",
     "fs": "0.0.1-security",
     "node-cron": "^3.0.0",
     "winston": "^3.3.3"

@@ -2,6 +2,7 @@ const axios = require("axios"); // http通信ライブラリ
 const cron = require("node-cron"); // 定期処理ライブラリ
 const fs = require("fs"); // ファイル処理ライブラリ
 const winston = require("winston"); // ロギングライブラリ
+const server = require("./server");
 
 // ロガー設定
 const logger = winston.createLogger({
@@ -49,6 +50,8 @@ cron.schedule(appSettings.cron_schedule, () => {
     //LINEに傘が必要かどうかの送信情報を組み立てる
     const lineMsg = makeLineMessage(maxPopInfo);
     logger.info(lineMsg);
+
+    server.sendPushMessage(lineMsg);
   });
 });
 
@@ -97,6 +100,7 @@ function makeLineMessage(maxPopInfo) {
 
   return lineMsg;
 }
+
 
 /**
  * アプリ設定ファイルを読み込む
