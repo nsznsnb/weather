@@ -11,7 +11,7 @@ const area = KAGOSIMA_AREA_CODE; // 鹿児島県内
 const logger = winston.createLogger({
     level: 'debug',
     format: winston.format.combine(
-        winston.format.timestamp(),  // timestampを出力する
+        // winston.format.timestamp(),  // timestampを出力する
         winston.format.json()
     ),
     transports: [
@@ -30,23 +30,47 @@ try {
 
 // 毎日定刻に送信を行う
 cron.schedule(appSettings.cron_schedule, () => {
+
+    let weatherForecastData;
   /**
-   * 気象庁からデータを取得してLINEに配信
+   * 気象庁のWebサイトから天気予報データを取得してLINEアプリに傘が必要かどうかを配信
    */
-  (async function getWeatherForecast() {
+  (async function getWeatherForecastData() {
     try {
-      const response = await axios.get(`${url}${area}.json`);
-      for (const area of response.data[0].timeSeries[0].areas) {
-        console.log(`----${area.area.name}----`);
-        for (const weather of area.weathers) {
-          console.log(weather);
-        }
-      }
+      weatherForecastData = await axios.get(`${url}${area}.json`);
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   })();
+
+  const popsInfo = analyzeWeatherForecastData(weatherForecastData);
+
+
 });
+
+/**
+ * 
+ * @param {Object} weatherForecastData 天気データのオブジェクト 
+ * @returns 今日の6時から24時までの降水確率を解析した結果{最高降水確率, その時間帯}
+ */
+function analyzeWeatherForecastData(weatherForecastData) {
+    let maxpop  // １日の最高降水確率
+    let maxPopTimeZone // 最高降水確率の時間帯
+    const timeZone = ["18-0時","0-6時","6-12時","12-18時", "18-24時"];
+
+    maxpop = parseInt(weatherForecastData[1]["areas"][0]["pops"][i])
+    for (let i = 2; i <= 4; i++) {
+        pop = parseInt(weatherForecastData[1]["areas"][0]["pops"][i])
+        if(pop > maxpop) {
+            maxpop = pop
+            maxPopTimeZone = timeZone[i]
+        }
+    }
+
+    return {maxPop, timeZone}
+}
+
+function makeSendMessage()
 
 /**
  * アプリ設定ファイルを読み込む
