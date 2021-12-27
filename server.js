@@ -1,12 +1,33 @@
 const express = require('express');     // サーバライブラリ
 const line = require('@line/bot-sdk');  // LINEライブラリ
 const utility = require(`./utility`) 
+const winston = require("winston"); // ロギングライブラリ
+const dotenv = require ("dotenv");
 
-const appSettings = utility.loadAppSettings();
+dotenv.config()     // .envの項目を環境変数として設定
+
+// ロガー設定
+const logger = winston.createLogger({
+    level: "debug",
+    format: winston.format.combine(
+      // winston.format.timestamp(),  // timestampを出力する
+      winston.format.json()
+    ),
+    transports: [new winston.transports.Console()],
+  });
+
+let appSettings // アプリ設定オブジェクト
+try {
+    // アプリ設定ファイルを読み込む
+    appSettings = utility.loadAppSettings();
+    logger.debug(appSettings);
+  } catch (error) {
+    logger.error(`アプリ設定ファイルの読み込みに失敗しました => ${error}`);
+  }
 
 const config = {
-    channelAccessToken: appSettings.channelAccessToken,     // 作成したBOTのチャンネルシークレット
-    channelSecret: appSettings.channelSecret           // 作成したBOTのチャンネルアクセストークン
+    channelAccessToken: process.env.channelAccessToken,     // 作成したBOTのチャンネルシークレット
+    channelSecret: process.env.channelSecret           // 作成したBOTのチャンネルアクセストークン
 };
 
 const PORT = process.env.PORT || 3000;  // サーバのポート番号
@@ -22,9 +43,9 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 const client = new line.Client(config);
 
 // pushMessageを送る処理
-function sendPushMessage(mes) {
-   client.pushMessage('送信先ID', {
+exports.sendPushMessage = function(msg) {
+   client.pushMessage(process.env.channelId, {
     type: 'text',
-    text: mes,
+    text: msg,
    })
 }
