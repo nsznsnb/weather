@@ -2,7 +2,7 @@ const fs = require("fs"); // ファイル処理ライブラリ
 /**
  * アプリ設定ファイルを読み込む
  */
- function loadAppSettings() {
+ exports.loadAppSettings = function() {
     const appSettingsPath = "./settings/appSettings.json";
     if (!fs.existsSync(appSettingsPath)) {
       logger.error(`アプリ設定ファイルは存在しません。 => ${appSettingsPath}`);

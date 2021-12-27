@@ -18,7 +18,7 @@ const logger = winston.createLogger({
 let appSettings; // アプリ設定オブジェクト
 try {
   // アプリ設定ファイルを読み込む
-  appSettings = loadAppSettings();
+  appSettings = utility.loadAppSettings();
   logger.debug(appSettings);
 } catch (error) {
   logger.error(`アプリ設定ファイルの読み込みに失敗しました => ${error}`);
