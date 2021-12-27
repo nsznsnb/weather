@@ -42,7 +42,7 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 
 const client = new line.Client(config);
 
-// pushMessageを送る処理
+// LINEメッセージを送る処理
 exports.sendPushMessage = function(msg) {
    client.pushMessage(process.env.channelId, {
     type: 'text',
