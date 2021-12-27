@@ -1,4 +1,3 @@
-# 傘要不要判定アプリ
 
 ### 気象庁の天気予報JSONデータを使用して、傘が必要かどうか毎朝Lineに通知する
 - 毎朝天気予報をチェックする手間を省くために作成した。
@@ -10,16 +9,12 @@
 - [LINE Messaging API](https://developers.line.biz/ja/services/messaging-api/)を使って、LINEへ通知（毎朝7時)  
 
 
-　
-
 ### ◆使用技術：
 - Node.js v14.15.5
 - LINE Messaging API
 
-　
-
-　
  
 ### ◆LINEへの通知結果
 - 今回はAWS lambdaやherokなどにはアップロードせずに、手元の環境で実行して一通り動作するかだけををチェックした。
 - 以下の例では、通知が１分正時間隔で行われるようcronを設定した。
+![https://github.com/nsznsnb/weather/blob/master/line_info_result.PNG](https://github.com/nsznsnb/weather/blob/master/line_info_result.PNG)
