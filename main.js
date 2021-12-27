@@ -25,8 +25,8 @@ try {
 }
 
 const url = `https://www.jma.go.jp/bosai/forecast/data/forecast/${appSettings.weatherInfo.areaCode}.json`;
-// 毎日定刻に送信を行う(直下のコメントアウトされた行はラズパイ等でこのアプリを常時稼働させるときに使う)
-//cron.schedule(appSettings.cronSchedule, () => {
+// 毎日定刻に送信を行う
+cron.schedule(appSettings.cronSchedule, () => {
   let weatherForecastData;
   /**
    * 気象庁のWebサイトから天気予報データを取得する
@@ -43,18 +43,20 @@ const url = `https://www.jma.go.jp/bosai/forecast/data/forecast/${appSettings.we
   })().then((response) => {
     //logger.debug(`天気予報データの取得成功 => ${weatherForecastData}`);
 
+    // 通知当日の日付を取得する
+    const date = new Date(weatherForecastData["timeSeries"][1]["timeDefines"][1])
+
     // 最高降水確率とその時間帯を取得する
     const maxPopInfo = analyzeWeatherForecastData(weatherForecastData);
-    console.log(maxPopInfo);
     //logger.info(JSON.stringify(maxPopInfo))
 
     //LINEに傘が必要かどうかの送信情報を組み立てる
-    const lineMsg = makeLineMessage(maxPopInfo);
+    const lineMsg = makeLineMessage(date, maxPopInfo);
     logger.info(lineMsg);
 
     server.sendPushMessage(lineMsg);
   });
-//});
+});
 
 /**
  *
@@ -89,10 +91,9 @@ function analyzeWeatherForecastData(weatherForecastData) {
  * @param {*} maxPopInfo 最高降水確率に関する情報オブジェクト
  * @returns lineに送信するメッセージ
  */
-function makeLineMessage(maxPopInfo) {
-  let lineMsg = ""; // LINEに配信するメッセージ
+function makeLineMessage(date, maxPopInfo) {
+  let lineMsg = (date.getMonth() + 1) + "月" + date.getDate() + "日\n"; // LINEに配信するメッセージ
   const maxPop = maxPopInfo.maxPop;
-
   if (maxPop < 30) {
     lineMsg += `今日は傘はいらないでしょう。\n今日は${maxPopInfo.maxPopTimeZone}に最高降水確率${maxPop}%となっています。`;
   } else {
