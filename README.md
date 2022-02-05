@@ -15,6 +15,6 @@
 
  
 ### ◆LINEへの通知結果
-- 今回はAWS LambdaやHerokuなどにはアップロードせずに、手元の環境で実行して一通り動作するかだけををチェックした。
+- 今回はAWS LambdaやHerokuなどにはアップロードせずに、手元の環境で実行して一通り動作するかということだけをチェックした。
 - 以下の例では、通知が１分正時間隔で行われるようcronを設定した。
 ![https://github.com/nsznsnb/weather/blob/master/line_info_result.PNG](https://github.com/nsznsnb/weather/blob/master/line_info_result.PNG)
